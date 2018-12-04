@@ -28,6 +28,7 @@
 #include "src/core/infer.h"
 #include "src/core/label_provider.h"
 #include "src/core/model_config.pb.h"
+#include "src/core/scheduler.h"
 #include "tensorflow/core/lib/core/errors.h"
 #include "tensorflow/core/public/session.h"
 
@@ -61,9 +62,11 @@ class BaseBundle : public InferenceServable {
   }
 
  protected:
+  // Run model on the context associated with 'runner_idx' to
+  // execute for one or more requests.
   void Run(
-    uint32_t runner_idx, std::vector<RunnerPayload>* payloads,
-    std::function<void(tensorflow::Status)> OnCompleteQueuedPayloads) override;
+    uint32_t runner_idx, std::vector<Scheduler::Payload>* payloads,
+    std::function<void(tensorflow::Status)> OnCompleteQueuedPayloads);
 
   using IONameMap = std::unordered_map<std::string, std::string>;
 
@@ -102,7 +105,7 @@ class BaseBundle : public InferenceServable {
     // an internal error that prevents any of the of requests from
     // completing. If an error is isolate to a single request payload
     // it will be reported in that payload.
-    tensorflow::Status Run(std::vector<RunnerPayload>* payloads);
+    tensorflow::Status Run(std::vector<Scheduler::Payload>* payloads);
 
     // Name of the model instance
     std::string name_;

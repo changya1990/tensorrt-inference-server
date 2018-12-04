@@ -88,6 +88,7 @@ cc_library(
         ":loader",
         ":plan_utils",
         "//src/core:constants",
+        "//src/core:dynamic_batch_scheduler",
         "//src/core:infer",
         "//src/core:label_provider",
         "//src/core:model_config_proto",
